@@ -153,6 +153,39 @@
   .frame-1{top:8%;left:-8%}
   .frame-2{bottom:16%;right:-8%}
   .frame-note em{font-style:normal;color:var(--gold)}
+
+  /* ---------- interactive wolf ears ---------- */
+  .avatar-stage{position:relative;display:inline-block;line-height:0}
+  .wolf-ear{
+    --pull:0;
+    position:absolute;bottom:calc(100% - 46px);z-index:4;
+    width:clamp(92px,17vw,152px);height:clamp(140px,26vw,228px);
+    cursor:grab;touch-action:none;user-select:none;
+    transform-origin:50% 100%;will-change:transform;
+  }
+  .wolf-ear.ear-left{left:4%}
+  .wolf-ear.ear-right{right:4%}
+  .wolf-ear:active{cursor:grabbing}
+  .ear-tilt,.ear-idle{width:100%;height:100%;transform-origin:50% 98%}
+  .ear-left .ear-tilt{transform:rotate(-12deg)}
+  .ear-right .ear-tilt{transform:rotate(12deg)}
+  .ear-idle{animation:earIdle 4.4s ease-in-out infinite}
+  .ear-right .ear-idle{animation-delay:-1.8s}
+  @keyframes earIdle{
+    0%,100%{transform:rotate(0) translateY(0)}
+    30%{transform:rotate(4.5deg) translateY(-3px)}
+    65%{transform:rotate(-3.5deg) translateY(-1px)}
+  }
+  .ear-shape{width:100%;height:100%;display:block;overflow:visible;transform-origin:50% 100%;transition:transform .12s ease-out}
+  .ear-outer{filter:drop-shadow(0 10px 18px rgba(0,0,0,.45))}
+  .wolf-ear.dragging .ear-shape{transform:scaleY(calc(1 - var(--pull) * 0.18)) scaleX(calc(1 + var(--pull) * 0.14))}
+  .wolf-ear.released .ear-shape{animation:earBoing .6s cubic-bezier(.34,1.56,.64,1)}
+  @keyframes earBoing{
+    0%{transform:scaleY(1) scaleX(1)}
+    30%{transform:scaleY(.88) scaleX(1.12)}
+    62%{transform:scaleY(1.12) scaleX(.95)}
+    100%{transform:scaleY(1) scaleX(1)}
+  }
   .scroll-hint{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);color:var(--muted);font-size:12px;letter-spacing:.15em;text-transform:uppercase}
   .scroll-hint .line{width:1px;height:34px;margin:8px auto 0;background:linear-gradient(180deg,var(--gold),transparent);animation:grow 1.8s infinite}
   @keyframes grow{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}50.1%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
@@ -359,7 +392,41 @@
         </div>
       </div>
       <div class="hero-visual reveal" data-delay="2">
-        <div class="canvas-hero art-0 photo-hero"><img src="profil.jpeg" alt="Photo of zWolfurs"></div>
+        <div class="avatar-stage">
+          <div class="wolf-ear ear-left" data-ear="left">
+            <div class="ear-tilt"><div class="ear-idle">
+              <svg class="ear-shape" viewBox="0 0 100 150" aria-hidden="true">
+                <defs>
+                  <linearGradient id="earOuterL" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0" stop-color="#3a271d"/><stop offset="1" stop-color="#1d120c"/>
+                  </linearGradient>
+                  <linearGradient id="earInnerL" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stop-color="#ffb0c6"/><stop offset="1" stop-color="#d9588a"/>
+                  </linearGradient>
+                </defs>
+                <path class="ear-outer" d="M50 4 C57 4 63 34 72 78 C79 112 88 138 82 145 C78 150 64 141 50 141 C36 141 22 150 18 145 C12 138 21 112 28 78 C37 34 43 4 50 4 Z" fill="url(#earOuterL)" stroke="#e8b04c" stroke-width="3.5" stroke-linejoin="round"/>
+                <path class="ear-inner" d="M50 36 C54 36 58 62 64 96 C68 116 73 130 69 133 C66 136 57 130 50 130 C43 130 34 136 31 133 C27 130 32 116 36 96 C42 62 46 36 50 36 Z" fill="url(#earInnerL)"/>
+              </svg>
+            </div></div>
+          </div>
+          <div class="wolf-ear ear-right" data-ear="right">
+            <div class="ear-tilt"><div class="ear-idle">
+              <svg class="ear-shape" viewBox="0 0 100 150" aria-hidden="true">
+                <defs>
+                  <linearGradient id="earOuterR" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0" stop-color="#3a271d"/><stop offset="1" stop-color="#1d120c"/>
+                  </linearGradient>
+                  <linearGradient id="earInnerR" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stop-color="#ffb0c6"/><stop offset="1" stop-color="#d9588a"/>
+                  </linearGradient>
+                </defs>
+                <path class="ear-outer" d="M50 4 C57 4 63 34 72 78 C79 112 88 138 82 145 C78 150 64 141 50 141 C36 141 22 150 18 145 C12 138 21 112 28 78 C37 34 43 4 50 4 Z" fill="url(#earOuterR)" stroke="#e8b04c" stroke-width="3.5" stroke-linejoin="round"/>
+                <path class="ear-inner" d="M50 36 C54 36 58 62 64 96 C68 116 73 130 69 133 C66 136 57 130 50 130 C43 130 34 136 31 133 C27 130 32 116 36 96 C42 62 46 36 50 36 Z" fill="url(#earInnerR)"/>
+              </svg>
+            </div></div>
+          </div>
+          <div class="canvas-hero art-0 photo-hero"><img src="profil.jpeg" alt="Photo of zWolfurs"></div>
+        </div>
         <div class="frame-note frame-1">Drawing <em>since 2019</em></div>
         <div class="frame-note frame-2">Making fursuit <em>since 2021</em></div>
       </div>
@@ -730,6 +797,46 @@
   openBtn.addEventListener('click',openModal);
   modal.querySelectorAll('[data-close]').forEach(el=>el.addEventListener('click',closeModal));
   document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+
+  // ---------- interactive wolf ears ----------
+  document.querySelectorAll('.wolf-ear').forEach(ear=>{
+    let dragging=false, sx=0, sy=0, pid=null;
+    const idle=ear.querySelector('.ear-idle');
+    const dir=ear.classList.contains('ear-left')?-1:1;
+
+    const down=e=>{
+      if(e.button!==undefined && e.button!==0) return;
+      dragging=true; sx=e.clientX; sy=e.clientY; pid=e.pointerId;
+      try{ ear.setPointerCapture(pid); }catch(_){}
+      ear.classList.add('dragging'); ear.classList.remove('released');
+      ear.style.transition='none';
+      if(idle) idle.style.animationPlayState='paused';
+      e.preventDefault();
+    };
+    const move=e=>{
+      if(!dragging) return;
+      const dx=e.clientX-sx, dy=e.clientY-sy;
+      const pull=Math.min(Math.hypot(dx,dy),190);
+      ear.style.transform=`translate(${dx*0.5}px,${dy*0.5}px) rotate(${dx*0.1*dir}deg) scale(${1+Math.min(pull*0.0016,0.2)})`;
+      ear.style.setProperty('--pull',(pull/190).toFixed(3));
+    };
+    const up=()=>{
+      if(!dragging) return;
+      dragging=false;
+      ear.classList.remove('dragging'); ear.classList.add('released');
+      ear.style.transition='transform .6s cubic-bezier(.34,1.56,.64,1)';
+      ear.style.transform='';
+      ear.style.setProperty('--pull',0);
+      setTimeout(()=>{ if(idle) idle.style.animationPlayState=''; },600);
+      setTimeout(()=>{ ear.classList.remove('released'); ear.style.transition=''; },700);
+    };
+    ear.addEventListener('pointerdown',down);
+    ear.addEventListener('pointermove',move);
+    ear.addEventListener('pointerup',up);
+    ear.addEventListener('pointercancel',up);
+    ear.addEventListener('lostpointercapture',up);
+  });
+
 })();
 </script>
 </body>
