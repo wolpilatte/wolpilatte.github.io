@@ -172,9 +172,9 @@
   .ear-idle{animation:earIdle 4.4s ease-in-out infinite}
   .ear-right .ear-idle{animation-delay:-1.8s}
   @keyframes earIdle{
-    0%,100%{transform:rotate(0) translateY(0)}
-    30%{transform:rotate(4.5deg) translateY(-3px)}
-    65%{transform:rotate(-3.5deg) translateY(-1px)}
+    0%,100%{transform:rotate(0)}
+    30%{transform:rotate(4.5deg)}
+    65%{transform:rotate(-3.5deg)}
   }
   .ear-shape{width:100%;height:100%;display:block;overflow:visible;transform-origin:50% 100%;transition:transform .12s ease-out}
   .ear-outer{filter:drop-shadow(0 10px 18px rgba(0,0,0,.45))}
@@ -405,7 +405,7 @@
                   </linearGradient>
                 </defs>
                 <path class="ear-outer" d="M50 4 C57 4 63 34 72 78 C79 112 88 138 82 145 C78 150 64 141 50 141 C36 141 22 150 18 145 C12 138 21 112 28 78 C37 34 43 4 50 4 Z" fill="url(#earOuterL)" stroke="#d6dae1" stroke-width="3" stroke-linejoin="round"/>
-                <path class="ear-inner" d="M50 66 C51.5 66 53 84 56 110 C57.5 123 59 131 57 133 C55.5 134 53 131 50 131 C47 131 44.5 134 43 133 C41 131 42.5 123 44 110 C47 84 48.5 66 50 66 Z" fill="url(#earInnerL)"/>
+                <path class="ear-inner" d="M50 60 C51.5 60 53 78 56 104 C57.5 117 59 125 57 127 C55.5 128 53 125 50 125 C47 125 44.5 128 43 127 C41 125 42.5 117 44 104 C47 78 48.5 60 50 60 Z" fill="url(#earInnerL)"/>
               </svg>
             </div></div>
           </div>
@@ -421,7 +421,7 @@
                   </linearGradient>
                 </defs>
                 <path class="ear-outer" d="M50 4 C57 4 63 34 72 78 C79 112 88 138 82 145 C78 150 64 141 50 141 C36 141 22 150 18 145 C12 138 21 112 28 78 C37 34 43 4 50 4 Z" fill="url(#earOuterR)" stroke="#d6dae1" stroke-width="3" stroke-linejoin="round"/>
-                <path class="ear-inner" d="M50 66 C51.5 66 53 84 56 110 C57.5 123 59 131 57 133 C55.5 134 53 131 50 131 C47 131 44.5 134 43 133 C41 131 42.5 123 44 110 C47 84 48.5 66 50 66 Z" fill="url(#earInnerR)"/>
+                <path class="ear-inner" d="M50 60 C51.5 60 53 78 56 104 C57.5 117 59 125 57 127 C55.5 128 53 125 50 125 C47 125 44.5 128 43 127 C41 125 42.5 117 44 104 C47 78 48.5 60 50 60 Z" fill="url(#earInnerR)"/>
               </svg>
             </div></div>
           </div>
@@ -817,7 +817,10 @@
       if(!dragging) return;
       const dx=e.clientX-sx, dy=e.clientY-sy;
       const pull=Math.min(Math.hypot(dx,dy),190);
-      ear.style.transform=`translate(${dx*0.5}px,${dy*0.5}px) rotate(${dx*0.1*dir}deg) scale(${1+Math.min(pull*0.0016,0.2)})`;
+      const rot=Math.max(-34,Math.min(34,dx*0.35*dir));
+      const stretch=Math.max(-0.2,Math.min(0.28,-dy*0.0025));
+      const widen=Math.min(Math.abs(dx)*0.0015,0.14);
+      ear.style.transform=`rotate(${rot}deg) scaleY(${1+stretch}) scaleX(${1+widen})`;
       ear.style.setProperty('--pull',(pull/190).toFixed(3));
     };
     const up=()=>{
