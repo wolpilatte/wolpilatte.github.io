@@ -889,7 +889,7 @@
       const left=[],right=[];
       for(let i=i0;i<=i1;i++){
         const p=pts[i];
-        const w=22+142*Math.pow(1-p.t,0.38);
+        const w=28+156*Math.pow(1-p.t,0.22);
         const nx=-Math.sin(p.ang), ny=Math.cos(p.ang);
         left.push([p.x+nx*w/2,p.y+ny*w/2]);
         right.push([p.x-nx*w/2,p.y-ny*w/2]);
