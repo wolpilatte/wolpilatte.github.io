@@ -909,9 +909,9 @@
       const step=LEN/N;
       for(let i=0;i<=N;i++){
         const t=i/N;
-        const follow=-s.wagV*0.18*Math.pow(t,1.6);
-        const flex=0.06*Math.sin(s.phase*0.9-0.8)*Math.pow(t,1.8);
-        const ang=A0+0.38*t+s.wag+follow+flex+s.pull*Math.pow(t,1.3);
+        const follow=-s.wagV*0.22*Math.pow(t,1.6);
+        const flex=0.11*Math.sin(s.phase*1.4-0.8)*Math.pow(t,1.3);
+        const ang=A0+0.42*t+s.wag+follow+flex+s.pull*Math.pow(t,1.3);
         pts.push({x,y,t,ang});
         x+=Math.cos(ang)*step; y+=Math.sin(ang)*step;
       }
