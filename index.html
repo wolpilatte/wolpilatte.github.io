@@ -186,6 +186,23 @@
     62%{transform:scaleY(1.12) scaleX(.95)}
     100%{transform:scaleY(1) scaleX(1)}
   }
+
+  /* ---------- fluffy interactive tail ---------- */
+  .wolf-tail{
+    position:absolute;left:-30%;bottom:-14%;width:clamp(160px,30vw,250px);
+    transform-origin:88% 42%;cursor:grab;touch-action:none;user-select:none;will-change:transform;
+  }
+  .wolf-tail:active{cursor:grabbing}
+  .tail-idle{transform-origin:88% 42%;animation:tailWag 2.6s ease-in-out infinite}
+  @keyframes tailWag{
+    0%,100%{transform:rotate(-8deg)}
+    50%{transform:rotate(8deg)}
+  }
+  .tail-shape{width:100%;height:auto;display:block;overflow:visible;filter:drop-shadow(0 12px 18px rgba(0,0,0,.45))}
+  .wolf-tail.dragging .tail-shape{filter:drop-shadow(0 16px 24px rgba(0,0,0,.5))}
+  @media (max-width:900px){
+    .wolf-tail{left:-22%;bottom:-10%;width:clamp(130px,34vw,200px)}
+  }
   .scroll-hint{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);color:var(--muted);font-size:12px;letter-spacing:.15em;text-transform:uppercase}
   .scroll-hint .line{width:1px;height:34px;margin:8px auto 0;background:linear-gradient(180deg,var(--gold),transparent);animation:grow 1.8s infinite}
   @keyframes grow{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}50.1%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
@@ -424,6 +441,40 @@
                 <path class="ear-inner" d="M50 60 C51.5 60 53 78 56 104 C57.5 117 59 125 57 127 C55.5 128 53 125 50 125 C47 125 44.5 128 43 127 C41 125 42.5 117 44 104 C47 78 48.5 60 50 60 Z" fill="url(#earInnerR)"/>
               </svg>
             </div></div>
+          </div>
+          <div class="wolf-tail" data-tail>
+            <div class="tail-idle">
+              <svg class="tail-shape" viewBox="0 0 240 190" aria-hidden="true">
+                <defs>
+                  <linearGradient id="tailFur" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0" stop-color="#aab0ba"/><stop offset="1" stop-color="#3c4048"/>
+                  </linearGradient>
+                  <linearGradient id="tailTipG" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0" stop-color="#a8d4ff"/><stop offset="1" stop-color="#3f7fdd"/>
+                  </linearGradient>
+                </defs>
+                <g class="tail-fur" fill="url(#tailFur)">
+                  <circle cx="222" cy="80" r="30"/><circle cx="205" cy="62" r="34"/><circle cx="188" cy="50" r="36"/>
+                  <circle cx="168" cy="44" r="38"/><circle cx="146" cy="44" r="38"/><circle cx="124" cy="50" r="36"/>
+                  <circle cx="104" cy="60" r="34"/><circle cx="86" cy="72" r="30"/><circle cx="70" cy="86" r="26"/>
+                  <circle cx="56" cy="100" r="22"/><circle cx="44" cy="114" r="18"/><circle cx="34" cy="128" r="15"/>
+                  <circle cx="27" cy="140" r="12"/>
+                  <circle cx="200" cy="36" r="16"/><circle cx="178" cy="26" r="16"/><circle cx="154" cy="24" r="16"/>
+                  <circle cx="132" cy="28" r="15"/><circle cx="112" cy="38" r="14"/><circle cx="94" cy="50" r="13"/>
+                  <circle cx="78" cy="64" r="12"/>
+                  <circle cx="208" cy="104" r="16"/><circle cx="190" cy="116" r="17"/><circle cx="170" cy="124" r="17"/>
+                  <circle cx="148" cy="128" r="16"/><circle cx="126" cy="130" r="14"/><circle cx="106" cy="134" r="13"/>
+                  <circle cx="88" cy="142" r="11"/>
+                </g>
+                <g class="tail-shine" fill="#c7ccd4" opacity=".32">
+                  <circle cx="196" cy="58" r="14"/><circle cx="172" cy="50" r="15"/><circle cx="148" cy="50" r="15"/>
+                  <circle cx="126" cy="58" r="13"/><circle cx="108" cy="68" r="12"/>
+                </g>
+                <g class="tail-tip" fill="url(#tailTipG)">
+                  <circle cx="44" cy="114" r="12"/><circle cx="34" cy="128" r="14"/><circle cx="27" cy="140" r="10"/>
+                </g>
+              </svg>
+            </div>
           </div>
           <div class="canvas-hero art-0 photo-hero"><img src="profil.jpeg" alt="Photo of zWolfurs"></div>
         </div>
@@ -844,6 +895,50 @@
     ear.addEventListener('pointerup',up);
     ear.addEventListener('pointercancel',up);
     ear.addEventListener('lostpointercapture',up);
+  });
+
+  // ---------- fluffy interactive tail ----------
+  document.querySelectorAll('.wolf-tail').forEach(tail=>{
+    let dragging=false, baseX=0, baseY=0, dist0=1;
+    const idle=tail.querySelector('.tail-idle');
+
+    const down=e=>{
+      if(e.button!==undefined && e.button!==0) return;
+      const rect=tail.getBoundingClientRect();
+      baseX=rect.left + rect.width*0.88;
+      baseY=rect.top + rect.height*0.42;
+      dist0=Math.max(Math.hypot(e.clientX-baseX, e.clientY-baseY), rect.width*0.35);
+      dragging=true;
+      try{ tail.setPointerCapture(e.pointerId); }catch(_){}
+      tail.classList.add('dragging');
+      tail.style.transition='none';
+      if(idle) idle.style.animationPlayState='paused';
+      e.preventDefault();
+    };
+    const move=e=>{
+      if(!dragging) return;
+      const dx=e.clientX-baseX, dy=e.clientY-baseY;
+      let rot=Math.atan2(dy,dx)*180/Math.PI - 164;
+      rot=Math.max(-55,Math.min(55,rot));
+      const dist=Math.hypot(dx,dy);
+      const len=Math.max(0.8,Math.min(1.7,dist/dist0));
+      const thick=Math.max(0.72,Math.min(1.2,1/Math.sqrt(len)));
+      tail.style.transform=`rotate(${rot.toFixed(2)}deg) scaleX(${len.toFixed(3)}) scaleY(${thick.toFixed(3)})`;
+    };
+    const up=()=>{
+      if(!dragging) return;
+      dragging=false;
+      tail.classList.remove('dragging');
+      tail.style.transition='transform .65s cubic-bezier(.34,1.56,.64,1)';
+      tail.style.transform='';
+      setTimeout(()=>{ if(idle) idle.style.animationPlayState=''; },650);
+      setTimeout(()=>{ tail.style.transition=''; },760);
+    };
+    tail.addEventListener('pointerdown',down);
+    tail.addEventListener('pointermove',move);
+    tail.addEventListener('pointerup',up);
+    tail.addEventListener('pointercancel',up);
+    tail.addEventListener('lostpointercapture',up);
   });
 
 })();
