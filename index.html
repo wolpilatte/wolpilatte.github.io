@@ -189,14 +189,14 @@
 
   /* ---------- smooth sinuous interactive tail ---------- */
   .wolf-tail{
-    position:absolute;left:-34%;top:56%;width:clamp(200px,36vw,320px);
-    transform-origin:90% 9%;cursor:grab;touch-action:none;user-select:none;will-change:transform;
+    position:absolute;left:-37%;top:59%;width:clamp(220px,40vw,360px);
+    transform-origin:83% 10%;cursor:grab;touch-action:none;user-select:none;will-change:transform;
   }
   .wolf-tail:active{cursor:grabbing}
   .tail-shape{width:100%;height:auto;display:block;overflow:visible;filter:drop-shadow(0 12px 18px rgba(0,0,0,.45))}
   .wolf-tail.dragging .tail-shape{filter:drop-shadow(0 16px 24px rgba(0,0,0,.5))}
   @media (max-width:900px){
-    .wolf-tail{left:-26%;top:58%;width:clamp(170px,42vw,260px)}
+    .wolf-tail{left:-28%;top:61%;width:clamp(180px,46vw,290px)}
   }
   .scroll-hint{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);color:var(--muted);font-size:12px;letter-spacing:.15em;text-transform:uppercase}
   .scroll-hint .line{width:1px;height:34px;margin:8px auto 0;background:linear-gradient(180deg,var(--gold),transparent);animation:grow 1.8s infinite}
@@ -439,7 +439,7 @@
           </div>
           <div class="wolf-tail" data-tail>
             <div class="tail-idle">
-              <svg class="tail-shape" viewBox="0 0 340 400" aria-hidden="true" preserveAspectRatio="xMaxYMid meet">
+              <svg class="tail-shape" viewBox="0 0 400 420" aria-hidden="true" preserveAspectRatio="xMaxYMid meet">
                 <defs>
                   <linearGradient id="tailFur" x1="0" y1="0" x2="0.35" y2="1">
                     <stop offset="0" stop-color="#b8bdc6"/><stop offset="0.5" stop-color="#767c86"/><stop offset="1" stop-color="#383c44"/>
@@ -879,13 +879,13 @@
       drag:false
     }));
 
-    const N=72, LEN=380, BX=305, BY=36, A0=115*Math.PI/180;
+    const N=72, LEN=380, BX=330, BY=40, A0=115*Math.PI/180;
 
     function ribbon(pts,i0,i1){
       const left=[],right=[];
       for(let i=i0;i<=i1;i++){
         const p=pts[i];
-        const w=6+48*Math.pow(1-p.t,0.8);
+        const w=8+88*Math.pow(1-p.t,0.85);
         const nx=-Math.sin(p.ang), ny=Math.cos(p.ang);
         left.push([p.x+nx*w/2,p.y+ny*w/2]);
         right.push([p.x-nx*w/2,p.y-ny*w/2]);
@@ -930,8 +930,8 @@
       const down=e=>{
         if(e.button!==undefined && e.button!==0) return;
         const rect=el.getBoundingClientRect();
-        baseX=rect.left + rect.width*0.90;
-        baseY=rect.top + rect.height*0.09;
+        baseX=rect.left + rect.width*0.83;
+        baseY=rect.top + rect.height*0.10;
         dist0=Math.max(Math.hypot(e.clientX-baseX,e.clientY-baseY), rect.width*0.35);
         dragging=true; s.drag=true;
         try{ el.setPointerCapture(e.pointerId); }catch(_){}
@@ -942,10 +942,8 @@
         if(!dragging) return;
         const dx=e.clientX-baseX, dy=e.clientY-baseY;
         let rot=Math.atan2(dy,dx)*180/Math.PI - 127;
-        rot=Math.max(-50,Math.min(50,rot));
-        const dist=Math.hypot(dx,dy);
-        const len=Math.max(0.8,Math.min(1.75,dist/dist0));
-        el.style.transform=`rotate(${rot.toFixed(2)}deg) scale(${len.toFixed(3)})`;
+        rot=Math.max(-48,Math.min(48,rot));
+        el.style.transform=`rotate(${rot.toFixed(2)}deg)`;
       };
       const up=()=>{
         if(!dragging) return;
