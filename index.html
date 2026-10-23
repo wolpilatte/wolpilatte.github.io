@@ -189,14 +189,14 @@
 
   /* ---------- smooth sinuous interactive tail ---------- */
   .wolf-tail{
-    position:absolute;left:-30%;bottom:-14%;width:clamp(160px,30vw,250px);
-    transform-origin:92% 32%;cursor:grab;touch-action:none;user-select:none;will-change:transform;
+    position:absolute;left:-34%;top:56%;width:clamp(200px,36vw,320px);
+    transform-origin:90% 9%;cursor:grab;touch-action:none;user-select:none;will-change:transform;
   }
   .wolf-tail:active{cursor:grabbing}
   .tail-shape{width:100%;height:auto;display:block;overflow:visible;filter:drop-shadow(0 12px 18px rgba(0,0,0,.45))}
   .wolf-tail.dragging .tail-shape{filter:drop-shadow(0 16px 24px rgba(0,0,0,.5))}
   @media (max-width:900px){
-    .wolf-tail{left:-22%;bottom:-10%;width:clamp(130px,34vw,200px)}
+    .wolf-tail{left:-26%;top:58%;width:clamp(170px,42vw,260px)}
   }
   .scroll-hint{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);color:var(--muted);font-size:12px;letter-spacing:.15em;text-transform:uppercase}
   .scroll-hint .line{width:1px;height:34px;margin:8px auto 0;background:linear-gradient(180deg,var(--gold),transparent);animation:grow 1.8s infinite}
@@ -439,17 +439,13 @@
           </div>
           <div class="wolf-tail" data-tail>
             <div class="tail-idle">
-              <svg class="tail-shape" viewBox="0 0 240 200" aria-hidden="true" preserveAspectRatio="xMaxYMid meet">
+              <svg class="tail-shape" viewBox="0 0 340 400" aria-hidden="true" preserveAspectRatio="xMaxYMid meet">
                 <defs>
                   <linearGradient id="tailFur" x1="0" y1="0" x2="0.35" y2="1">
                     <stop offset="0" stop-color="#b8bdc6"/><stop offset="0.5" stop-color="#767c86"/><stop offset="1" stop-color="#383c44"/>
                   </linearGradient>
-                  <linearGradient id="tailTipG" x1="0" y1="0" x2="1" y2="1">
-                    <stop offset="0" stop-color="#a8d4ff"/><stop offset="1" stop-color="#3f7fdd"/>
-                  </linearGradient>
                 </defs>
                 <path class="tail-fur-path" fill="url(#tailFur)"/>
-                <path class="tail-tip-path" fill="url(#tailTipG)"/>
               </svg>
             </div>
           </div>
@@ -879,18 +875,17 @@
     const states=[...document.querySelectorAll('.wolf-tail')].map(el=>({
       el,
       fur:el.querySelector('.tail-fur-path'),
-      tip:el.querySelector('.tail-tip-path'),
       phase:Math.random()*6.28,
       drag:false
     }));
 
-    const N=52, LEN=208, BX=222, BY=64, A0=150*Math.PI/180;
+    const N=72, LEN=380, BX=305, BY=36, A0=115*Math.PI/180;
 
     function ribbon(pts,i0,i1){
       const left=[],right=[];
       for(let i=i0;i<=i1;i++){
         const p=pts[i];
-        const w=6+50*Math.pow(1-p.t,0.8);
+        const w=6+48*Math.pow(1-p.t,0.8);
         const nx=-Math.sin(p.ang), ny=Math.cos(p.ang);
         left.push([p.x+nx*w/2,p.y+ny*w/2]);
         right.push([p.x-nx*w/2,p.y-ny*w/2]);
@@ -918,7 +913,6 @@
         x+=Math.cos(ang)*step; y+=Math.sin(ang)*step;
       }
       s.fur.setAttribute('d',ribbon(pts,0,N));
-      s.tip.setAttribute('d',ribbon(pts,Math.floor(N*0.8),N));
     }
 
     let last=performance.now();
@@ -936,8 +930,8 @@
       const down=e=>{
         if(e.button!==undefined && e.button!==0) return;
         const rect=el.getBoundingClientRect();
-        baseX=rect.left + rect.width*0.92;
-        baseY=rect.top + rect.height*0.32;
+        baseX=rect.left + rect.width*0.90;
+        baseY=rect.top + rect.height*0.09;
         dist0=Math.max(Math.hypot(e.clientX-baseX,e.clientY-baseY), rect.width*0.35);
         dragging=true; s.drag=true;
         try{ el.setPointerCapture(e.pointerId); }catch(_){}
@@ -947,12 +941,11 @@
       const move=e=>{
         if(!dragging) return;
         const dx=e.clientX-baseX, dy=e.clientY-baseY;
-        let rot=Math.atan2(dy,dx)*180/Math.PI - 164;
-        rot=Math.max(-55,Math.min(55,rot));
+        let rot=Math.atan2(dy,dx)*180/Math.PI - 127;
+        rot=Math.max(-50,Math.min(50,rot));
         const dist=Math.hypot(dx,dy);
-        const len=Math.max(0.8,Math.min(1.7,dist/dist0));
-        const thick=Math.max(0.72,Math.min(1.2,1/Math.sqrt(len)));
-        el.style.transform=`rotate(${rot.toFixed(2)}deg) scaleX(${len.toFixed(3)}) scaleY(${thick.toFixed(3)})`;
+        const len=Math.max(0.8,Math.min(1.75,dist/dist0));
+        el.style.transform=`rotate(${rot.toFixed(2)}deg) scale(${len.toFixed(3)})`;
       };
       const up=()=>{
         if(!dragging) return;
