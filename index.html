@@ -919,6 +919,7 @@
       w.line.setAttribute('d',d);
       w.hit.setAttribute('d',d);
     }
+    items.forEach(w=>shape(w, performance.now()));
 
     let last=performance.now();
     function tick(now){
