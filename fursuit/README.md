@@ -5,8 +5,7 @@ Nggak perlu edit HTML lagi.
 
 ## Nama file
 
-Pilih salah satu format: `.png`, `.jpg`, `.jpeg`, atau `.webp`.
-Urutan pengecekan: png, jpg, jpeg, webp.
+Pakai `.png` atau `.jpg`. Kalau dua-duanya ada, file `.png` yang dipakai.
 
 | Kartu | Nama file |
 | --- | --- |
@@ -24,6 +23,7 @@ Contoh: simpan foto paws sebagai `fursuit/paw.jpg`.
 - Rasio paling pas 16:10. Foto lain tetap bisa, nanti di-crop otomatis.
 - Nama file harus huruf kecil dan pakai tanda `-`, bukan spasi.
 - Kalau file belum ada, kartu tetap memakai gradient dan ikon seperti sekarang.
+  Gambar rusak nggak akan kelihatan.
 - Foto untuk tombol **View Fursuit Examples** ada di folder utama, yaitu
   `f1.jpeg` sampai `f8.jpeg`. Ganti file itu kalau mau update contoh fursuit.
 
