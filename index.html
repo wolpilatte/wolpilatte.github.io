@@ -217,6 +217,7 @@
 
   /* ---------- gallery ---------- */
   .gallery-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px}
+  #gallery{background:var(--bg2)}
   .art-card{
     border-radius:var(--radius);overflow:hidden;position:relative;cursor:pointer;
     border:1px solid var(--line);background:var(--card);transition:.4s cubic-bezier(.16,1,.3,1);
@@ -238,11 +239,13 @@
   .svc-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;transition:.35s cubic-bezier(.16,1,.3,1);display:flex;flex-direction:column;position:relative}
   .svc-card:hover{transform:translateY(-8px);border-color:rgba(232,176,76,.5);box-shadow:var(--shadow)}
   .svc-canvas{aspect-ratio:16/10;position:relative;overflow:hidden;display:grid;place-items:center}
-  .svc-canvas .ico-inline{font-size:46px;position:relative;z-index:1;filter:drop-shadow(0 8px 18px rgba(0,0,0,.45));transition:transform .4s}
+  .svc-canvas .svc-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;z-index:1}
+  .svc-canvas .svc-photo.missing{display:none}
+  .svc-canvas .ico-inline{font-size:46px;position:relative;z-index:0;filter:drop-shadow(0 8px 18px rgba(0,0,0,.45));transition:transform .4s}
   .svc-card:hover .ico-inline{transform:scale(1.15) rotate(-6deg)}
-  .svc-canvas .shine{position:absolute;inset:0;background:linear-gradient(120deg,transparent 30%,rgba(255,255,255,.18) 50%,transparent 70%);transform:translateX(-120%);transition:transform .8s;pointer-events:none}
+  .svc-canvas .shine{position:absolute;inset:0;background:linear-gradient(120deg,transparent 30%,rgba(255,255,255,.18) 50%,transparent 70%);transform:translateX(-120%);transition:transform .8s;pointer-events:none;z-index:2}
   .svc-card:hover .shine{transform:translateX(120%)}
-  .svc-canvas .tag{position:absolute;top:14px;left:14px;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:5px 10px;border-radius:99px;background:rgba(20,13,10,.65);border:1px solid rgba(245,234,217,.2);backdrop-filter:blur(6px);z-index:1}
+  .svc-canvas .tag{position:absolute;top:14px;left:14px;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:5px 10px;border-radius:99px;background:rgba(20,13,10,.65);border:1px solid rgba(245,234,217,.2);backdrop-filter:blur(6px);z-index:2}
   .svc-body{padding:24px;display:flex;flex-direction:column;flex:1}
   .svc-body h3{font-family:'Playfair Display',serif;font-size:19px;margin-bottom:8px}
   .svc-body p{color:var(--muted);font-size:14.5px;flex:1}
@@ -391,8 +394,8 @@
     <button class="hamburger" id="hamburger" aria-label="Menu" aria-expanded="false" aria-controls="navLinks"><span></span><span></span><span></span></button>
     <ul class="nav-links" id="navLinks">
       <li><a href="#home" class="active">Home</a></li>
-      <li><a href="#gallery">Gallery</a></li>
       <li><a href="#fursuit">Fursuit</a></li>
+      <li><a href="#gallery">Gallery</a></li>
       <li><a href="#statement">Guide</a></li>
       <li><a href="#contact">Contact</a></li>
     </ul>
@@ -491,6 +494,138 @@
   </div>
 </div>
 
+<!-- FURSUIT -->
+<section class="statement" id="fursuit">
+  <div class="container">
+    <div class="banner-frame reveal">
+      <div class="banner-slot"><img src="banner.jpeg" alt="Fursuit banner"></div>
+    </div>
+    <div class="section-head reveal">
+      <span class="eyebrow">Fursuit Making</span>
+      <h2 class="section-title">Custom fursuits, <em>handmade</em> with love</h2>
+      <p class="section-sub">Every suit is sewn by hand, one stitch at a time, to bring your character to life.</p>
+    </div>
+    <div class="service-grid">
+      <div class="svc-card reveal">
+        <div class="svc-canvas art-2">
+          <!-- Foto: taruh di fursuit/paw.png atau fursuit/paw.jpg -->
+          <img class="svc-photo" data-photo="paw" alt="Fursuit paws and feetpaws" loading="lazy" decoding="async">
+          <span class="tag">Paws</span><span class="ico-inline">🐾</span><div class="shine"></div>
+        </div>
+        <div class="svc-body">
+          <h3>Paws &amp; Feetpaws</h3>
+          <p>Soft, durable, and sized to your hand — built for wear, hugs, and long convention days.</p>
+          <button class="price-btn" type="button">Pricing<span class="chev">▾</span></button>
+          <div class="price-list">
+            <div><span>Paw</span><b>Rp 300k – 500k</b></div>
+            <div><span>Feetpaw</span><b>Rp 500k – 700k</b></div>
+          </div>
+        </div>
+      </div>
+      <div class="svc-card reveal" data-delay="1">
+        <div class="svc-canvas art-1">
+          <!-- Foto: taruh di fursuit/head.png atau fursuit/head.jpg -->
+          <img class="svc-photo" data-photo="head" alt="Custom fursuit head" loading="lazy" decoding="async">
+          <span class="tag">Heads</span><span class="ico-inline">🦊</span><div class="shine"></div>
+        </div>
+        <div class="svc-body">
+          <h3>Custom Heads</h3>
+          <p>Heads with moving jaws, roomy vision, and ventilation so you stay comfy all day.</p>
+          <button class="price-btn" type="button">Pricing<span class="chev">▾</span></button>
+          <div class="price-list">
+            <div><span>Head</span><b>Rp 1jt – 1,8jt</b></div>
+          </div>
+        </div>
+      </div>
+      <div class="svc-card reveal" data-delay="2">
+        <div class="svc-canvas art-4">
+          <!-- Foto: taruh di fursuit/mini-partial.png atau fursuit/mini-partial.jpg -->
+          <img class="svc-photo" data-photo="mini-partial" alt="Mini partial fursuit" loading="lazy" decoding="async">
+          <span class="tag">Mini Partial</span><span class="ico-inline">🧶</span><div class="shine"></div>
+        </div>
+        <div class="svc-body">
+          <h3>Mini Partial</h3>
+          <p>The essentials to become your fursona from the neck up — comfy and easy to wear anywhere.</p>
+          <ul class="svc-includes">
+            <li>Head</li><li>Paws</li><li>Tail</li>
+          </ul>
+          <button class="price-btn" type="button">Pricing<span class="chev">▾</span></button>
+          <div class="price-list">
+            <div><span>Total</span><b>Rp 1,4jt – DoS</b></div>
+            <div><span>Head</span><b>Rp 1jt – 1,8jt</b></div>
+            <div><span>Paws</span><b>Rp 300k – 500k</b></div>
+            <div><span>Tail</span><b>Rp 80k – 300k</b></div>
+          </div>
+        </div>
+      </div>
+      <div class="svc-card reveal" data-delay="2">
+        <div class="svc-canvas art-6">
+          <!-- Foto: taruh di fursuit/full-partial.png atau fursuit/full-partial.jpg -->
+          <img class="svc-photo" data-photo="full-partial" alt="Full partial fursuit" loading="lazy" decoding="async">
+          <span class="tag">Full Partial</span><span class="ico-inline">🦺</span><div class="shine"></div>
+        </div>
+        <div class="svc-body">
+          <h3>Full Partial</h3>
+          <p>The full look without the full suit — perfect balance of character and comfort.</p>
+          <ul class="svc-includes">
+            <li>Head</li><li>Paws</li><li>Arm Sleeves</li><li>Feetpaws</li><li>Tail</li>
+          </ul>
+          <button class="price-btn" type="button">Pricing<span class="chev">▾</span></button>
+          <div class="price-list">
+            <div><span>Total</span><b>Rp 2,2jt – DoS</b></div>
+            <div><span>Head</span><b>Rp 1jt – 1,8jt</b></div>
+            <div><span>Paws</span><b>Rp 300k – 500k</b></div>
+            <div><span>Arm Sleeves</span><b>Rp 300k</b></div>
+            <div><span>Feetpaws</span><b>Rp 500k – 700k</b></div>
+            <div><span>Tail</span><b>Rp 80k – 300k</b></div>
+          </div>
+        </div>
+      </div>
+      <div class="svc-card reveal">
+        <div class="svc-canvas art-7">
+          <!-- Foto: taruh di fursuit/tail.png atau fursuit/tail.jpg -->
+          <img class="svc-photo" data-photo="tail" alt="Fursuit tail and accessories" loading="lazy" decoding="async">
+          <span class="tag">Tails</span><span class="ico-inline">🧵</span><div class="shine"></div>
+        </div>
+        <div class="svc-body">
+          <h3>Tails &amp; Accessories</h3>
+          <p>Fluffy, wired, or gravity-defying — tails and add-ons made to match your design.</p>
+          <button class="price-btn" type="button">Pricing<span class="chev">▾</span></button>
+          <div class="price-list">
+            <div><span>Tail</span><b>Rp 80k – 300k</b></div>
+          </div>
+        </div>
+      </div>
+      <div class="svc-card reveal" data-delay="1">
+        <div class="svc-canvas art-3">
+          <!-- Foto: taruh di fursuit/refurbish.png atau fursuit/refurbish.jpg -->
+          <img class="svc-photo" data-photo="refurbish" alt="Fursuit refurbish service" loading="lazy" decoding="async">
+          <span class="tag">Refurbish</span><span class="ico-inline">🛠️</span><div class="shine"></div>
+        </div>
+        <div class="svc-body">
+          <h3>Refurbish</h3>
+          <p>Fresh cleaning, repairs, and upgrades to bring your existing suit back to life.</p>
+          <button class="price-btn" type="button">Pricing<span class="chev">▾</span></button>
+          <div class="price-list">
+            <div><span>Refurbish</span><b>Rp 700k – DoS</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="price-foot reveal">All prices in IDR. DoS = depends on size and detail.</p>
+    <div class="fs-cta reveal">
+      <span class="contact-soon">
+        <button type="button" class="btn btn-primary" disabled style="cursor:not-allowed;opacity:.55">Order a Fursuit</button>
+        <em class="soon-tag">Coming soon</em>
+      </span>
+      <button type="button" class="btn btn-examples" id="openExamples">View Fursuit Examples</button>
+    </div>
+    <div class="sec-bottom reveal" data-delay="1">
+      <a href="#statement" class="btn btn-guidelines">Guidelines</a>
+    </div>
+  </div>
+</section>
+
 <!-- GALLERY -->
 <section id="gallery">
   <div class="container">
@@ -558,114 +693,6 @@
       </div>
     </div>
     <p class="price-foot reveal">All prices in IDR.</p>
-    <div class="sec-bottom reveal" data-delay="1">
-      <a href="#statement" class="btn btn-guidelines">Guidelines</a>
-    </div>
-  </div>
-</section>
-
-<!-- FURSUIT -->
-<section class="statement" id="fursuit">
-  <div class="container">
-    <div class="banner-frame reveal">
-      <div class="banner-slot"><img src="banner.jpeg" alt="Fursuit banner"></div>
-    </div>
-    <div class="section-head reveal">
-      <span class="eyebrow">Fursuit Making</span>
-      <h2 class="section-title">Custom fursuits, <em>handmade</em> with love</h2>
-      <p class="section-sub">Every suit is sewn by hand, one stitch at a time, to bring your character to life.</p>
-    </div>
-    <div class="service-grid">
-      <div class="svc-card reveal">
-        <div class="svc-canvas art-2"><span class="tag">Paws</span><span class="ico-inline">🐾</span><div class="shine"></div></div>
-        <div class="svc-body">
-          <h3>Paws &amp; Feetpaws</h3>
-          <p>Soft, durable, and sized to your hand — built for wear, hugs, and long convention days.</p>
-          <button class="price-btn" type="button">Pricing<span class="chev">▾</span></button>
-          <div class="price-list">
-            <div><span>Paw</span><b>Rp 300k – 500k</b></div>
-            <div><span>Feetpaw</span><b>Rp 500k – 700k</b></div>
-          </div>
-        </div>
-      </div>
-      <div class="svc-card reveal" data-delay="1">
-        <div class="svc-canvas art-1"><span class="tag">Heads</span><span class="ico-inline">🦊</span><div class="shine"></div></div>
-        <div class="svc-body">
-          <h3>Custom Heads</h3>
-          <p>Heads with moving jaws, roomy vision, and ventilation so you stay comfy all day.</p>
-          <button class="price-btn" type="button">Pricing<span class="chev">▾</span></button>
-          <div class="price-list">
-            <div><span>Head</span><b>Rp 1jt – 1,8jt</b></div>
-          </div>
-        </div>
-      </div>
-      <div class="svc-card reveal" data-delay="2">
-        <div class="svc-canvas art-4"><span class="tag">Mini Partial</span><span class="ico-inline">🧶</span><div class="shine"></div></div>
-        <div class="svc-body">
-          <h3>Mini Partial</h3>
-          <p>The essentials to become your fursona from the neck up — comfy and easy to wear anywhere.</p>
-          <ul class="svc-includes">
-            <li>Head</li><li>Paws</li><li>Tail</li>
-          </ul>
-          <button class="price-btn" type="button">Pricing<span class="chev">▾</span></button>
-          <div class="price-list">
-            <div><span>Total</span><b>Rp 1,4jt – DoS</b></div>
-            <div><span>Head</span><b>Rp 1jt – 1,8jt</b></div>
-            <div><span>Paws</span><b>Rp 300k – 500k</b></div>
-            <div><span>Tail</span><b>Rp 80k – 300k</b></div>
-          </div>
-        </div>
-      </div>
-      <div class="svc-card reveal" data-delay="2">
-        <div class="svc-canvas art-6"><span class="tag">Full Partial</span><span class="ico-inline">🦺</span><div class="shine"></div></div>
-        <div class="svc-body">
-          <h3>Full Partial</h3>
-          <p>The full look without the full suit — perfect balance of character and comfort.</p>
-          <ul class="svc-includes">
-            <li>Head</li><li>Paws</li><li>Arm Sleeves</li><li>Feetpaws</li><li>Tail</li>
-          </ul>
-          <button class="price-btn" type="button">Pricing<span class="chev">▾</span></button>
-          <div class="price-list">
-            <div><span>Total</span><b>Rp 2,2jt – DoS</b></div>
-            <div><span>Head</span><b>Rp 1jt – 1,8jt</b></div>
-            <div><span>Paws</span><b>Rp 300k – 500k</b></div>
-            <div><span>Arm Sleeves</span><b>Rp 300k</b></div>
-            <div><span>Feetpaws</span><b>Rp 500k – 700k</b></div>
-            <div><span>Tail</span><b>Rp 80k – 300k</b></div>
-          </div>
-        </div>
-      </div>
-      <div class="svc-card reveal">
-        <div class="svc-canvas art-7"><span class="tag">Tails</span><span class="ico-inline">🧵</span><div class="shine"></div></div>
-        <div class="svc-body">
-          <h3>Tails &amp; Accessories</h3>
-          <p>Fluffy, wired, or gravity-defying — tails and add-ons made to match your design.</p>
-          <button class="price-btn" type="button">Pricing<span class="chev">▾</span></button>
-          <div class="price-list">
-            <div><span>Tail</span><b>Rp 80k – 300k</b></div>
-          </div>
-        </div>
-      </div>
-      <div class="svc-card reveal" data-delay="1">
-        <div class="svc-canvas art-3"><span class="tag">Refurbish</span><span class="ico-inline">🛠️</span><div class="shine"></div></div>
-        <div class="svc-body">
-          <h3>Refurbish</h3>
-          <p>Fresh cleaning, repairs, and upgrades to bring your existing suit back to life.</p>
-          <button class="price-btn" type="button">Pricing<span class="chev">▾</span></button>
-          <div class="price-list">
-            <div><span>Refurbish</span><b>Rp 700k – DoS</b></div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <p class="price-foot reveal">All prices in IDR. DoS = depends on size and detail.</p>
-    <div class="fs-cta reveal">
-      <span class="contact-soon">
-        <button type="button" class="btn btn-primary" disabled style="cursor:not-allowed;opacity:.55">Order a Fursuit</button>
-        <em class="soon-tag">Coming soon</em>
-      </span>
-      <button type="button" class="btn btn-examples" id="openExamples">View Fursuit Examples</button>
-    </div>
     <div class="sec-bottom reveal" data-delay="1">
       <a href="#statement" class="btn btn-guidelines">Guidelines</a>
     </div>
@@ -784,6 +811,21 @@
   });
   links.addEventListener('click',e=>{
     if(e.target.tagName==='A'){burger.classList.remove('open');links.classList.remove('open');burger.setAttribute('aria-expanded','false');}
+  });
+
+  // ---------- fursuit card photos (png / jpg) ----------
+  document.querySelectorAll('.svc-photo').forEach(img=>{
+    const base=img.dataset.photo;
+    if(!base) return;
+    const exts=['png','jpg','jpeg','webp'];
+    let i=0;
+    const next=()=>{
+      if(i>=exts.length){img.classList.add('missing');return;}
+      img.src='fursuit/'+base+'.'+exts[i++];
+    };
+    img.addEventListener('error',next);
+    img.addEventListener('load',()=>img.classList.add('loaded'));
+    next();
   });
 
   const roles=['an Artist ✦','a Fursuit Maker ✦'];
