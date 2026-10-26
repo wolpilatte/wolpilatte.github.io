@@ -187,18 +187,11 @@
     100%{transform:scaleY(1) scaleX(1)}
   }
 
-  /* ---------- springy cat whiskers ---------- */
-  .whisker-field{position:absolute;inset:0;z-index:5;pointer-events:none}
-  .whisker-anchor{position:absolute;width:0;height:0}
-  .whisker{
-    position:absolute;top:-7px;height:14px;width:clamp(78px,21vw,118px);
-    pointer-events:auto;cursor:grab;touch-action:none;user-select:none;will-change:transform;
-  }
-  .whisker:active{cursor:grabbing}
-  .whisker.left{right:0;transform-origin:100% 50%}
-  .whisker.right{left:0;transform-origin:0 50%}
-  .whisker svg{width:100%;height:100%;display:block;overflow:visible}
-  .whisker path{fill:none;stroke:rgba(240,234,222,.85);stroke-width:2.2;stroke-linecap:round;filter:drop-shadow(0 1px 2px rgba(0,0,0,.5))}
+  /* ---------- springy wind-blown cat whiskers ---------- */
+  .whisker-field{position:absolute;inset:0;width:100%;height:100%;z-index:5;pointer-events:none;overflow:visible}
+  .whisker-line{fill:none;stroke:rgba(240,234,222,.85);stroke-width:2.2;stroke-linecap:round;filter:drop-shadow(0 1px 2px rgba(0,0,0,.5));pointer-events:none}
+  .whisker-hit{fill:none;stroke:rgba(0,0,0,.001);stroke-width:18;stroke-linecap:round;pointer-events:stroke;cursor:grab;touch-action:none}
+  .whisker-hit:active{cursor:grabbing}
 
   .scroll-hint{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);color:var(--muted);font-size:12px;letter-spacing:.15em;text-transform:uppercase}
   .scroll-hint .line{width:1px;height:34px;margin:8px auto 0;background:linear-gradient(180deg,var(--gold),transparent);animation:grow 1.8s infinite}
@@ -440,20 +433,20 @@
             </div></div>
           </div>
           <div class="canvas-hero art-0 photo-hero"><img src="profil.jpeg" alt="Photo of zWolfurs">
-            <div class="whisker-field" aria-hidden="true">
-              <div class="whisker-anchor" style="left:24%;top:51%">
-                <div class="whisker left" data-whisker="left" data-rest="11"><svg viewBox="0 0 136 14" preserveAspectRatio="none"><path d="M2 7 C40 3 94 11 134 6"/></svg></div>
-              </div>
-              <div class="whisker-anchor" style="left:24%;top:57%">
-                <div class="whisker left" data-whisker="left" data-rest="-8"><svg viewBox="0 0 136 14" preserveAspectRatio="none"><path d="M2 7 C44 10 92 4 134 8"/></svg></div>
-              </div>
-              <div class="whisker-anchor" style="left:76%;top:51%">
-                <div class="whisker right" data-whisker="right" data-rest="-11"><svg viewBox="0 0 136 14" preserveAspectRatio="none"><path d="M2 7 C40 3 94 11 134 6"/></svg></div>
-              </div>
-              <div class="whisker-anchor" style="left:76%;top:57%">
-                <div class="whisker right" data-whisker="right" data-rest="8"><svg viewBox="0 0 136 14" preserveAspectRatio="none"><path d="M2 7 C44 10 92 4 134 8"/></svg></div>
-              </div>
-            </div>
+            <svg class="whisker-field" viewBox="0 0 360 450" preserveAspectRatio="none" aria-hidden="true">
+              <g data-whisker="left" data-y="246" data-rest="0.19" data-phase="0.2" data-freq="1.00">
+                <path class="whisker-hit"/><path class="whisker-line"/>
+              </g>
+              <g data-whisker="left" data-y="269" data-rest="-0.14" data-phase="1.7" data-freq="1.13">
+                <path class="whisker-hit"/><path class="whisker-line"/>
+              </g>
+              <g data-whisker="right" data-y="246" data-rest="-0.19" data-phase="0.9" data-freq="0.92">
+                <path class="whisker-hit"/><path class="whisker-line"/>
+              </g>
+              <g data-whisker="right" data-y="269" data-rest="0.14" data-phase="2.4" data-freq="1.07">
+                <path class="whisker-hit"/><path class="whisker-line"/>
+              </g>
+            </svg>
           </div>
         </div>
         <div class="frame-note frame-1">Drawing <em>since 2019</em></div>
@@ -875,67 +868,111 @@
     ear.addEventListener('lostpointercapture',up);
   });
 
-  // ---------- springy cat whiskers ----------
+  // ---------- springy, wind-blown cat whiskers ----------
   (function(){
-    const list=[...document.querySelectorAll('[data-whisker]')].map(el=>{
-      const rest=parseFloat(el.dataset.rest)||0;
+    const svg=document.querySelector('.whisker-field');
+    if(!svg) return;
+
+    const L0=86, MINL=52, MAXL=200;
+    const norm=a=>Math.atan2(Math.sin(a),Math.cos(a));
+
+    const items=[...svg.querySelectorAll('[data-whisker]')].map(g=>{
+      const side=g.dataset.whisker;
+      const rest=parseFloat(g.dataset.rest)||0;
       return {
-        el,
-        anchor:el.closest('.whisker-anchor'),
-        side:el.dataset.whisker,
+        g,
+        hit:g.querySelector('.whisker-hit'),
+        line:g.querySelector('.whisker-line'),
+        base: side==='left'?Math.PI:0,
         rest,
-        angle:rest,
-        vel:0,
-        target:rest,
-        drag:false,
-        rootX:0,
-        rootY:0
+        x: side==='left'?47:313,
+        y: parseFloat(g.dataset.y)||258,
+        phase: parseFloat(g.dataset.phase)||0,
+        freq: parseFloat(g.dataset.freq)||1,
+        rot:rest, rotV:0, targetRot:rest,
+        len:L0, lenV:0, targetLen:L0,
+        drag:false, grabLen:0, grabAng:0, startLen:L0, startRot:rest
       };
     });
-    const apply=w=>{ w.el.style.transform=`rotate(${w.angle.toFixed(2)}deg)`; };
-    list.forEach(apply);
+
+    function shape(w, now){
+      const t=now/1000;
+      const live=w.drag?0.35:1;
+      const sway=(0.05*Math.sin(t*1.05*w.freq+w.phase)
+                 +0.022*Math.sin(t*2.17*w.freq+w.phase*1.7)
+                 +0.025*Math.sin(t*0.37+w.phase*0.6))*live;
+      const ang=w.base+w.rot+sway;
+      const dx=Math.cos(ang), dy=Math.sin(ang);
+      const nx=-dy, ny=dx;
+      const gust=(2.2+1.7*Math.sin(t*0.61+w.phase*1.1))*Math.sin(t*1.45*w.freq+w.phase*0.9)+1.4;
+      const bow=(w.drag?1.2:gust);
+      const len=w.len;
+      const tipx=w.x+dx*len, tipy=w.y+dy*len;
+      const c1x=w.x+dx*len*0.34+nx*bow*0.25;
+      const c1y=w.y+dy*len*0.34+ny*bow*0.25;
+      const c2x=w.x+dx*len*0.72+nx*bow;
+      const c2y=w.y+dy*len*0.72+ny*bow;
+      const d='M'+w.x.toFixed(2)+' '+w.y.toFixed(2)
+        +' C'+c1x.toFixed(2)+' '+c1y.toFixed(2)
+        +' '+c2x.toFixed(2)+' '+c2y.toFixed(2)
+        +' '+tipx.toFixed(2)+' '+tipy.toFixed(2);
+      w.line.setAttribute('d',d);
+      w.hit.setAttribute('d',d);
+    }
 
     let last=performance.now();
     function tick(now){
       const dt=Math.min((now-last)/1000,0.033); last=now;
-      list.forEach(w=>{
-        w.vel += (w.target - w.angle)*120*dt;
-        w.vel *= Math.exp(-13*dt);
-        w.angle += w.vel*dt;
-        apply(w);
+      items.forEach(w=>{
+        w.rotV += (w.targetRot-w.rot)*130*dt;
+        w.rotV *= Math.exp(-13*dt);
+        w.rot += w.rotV*dt;
+        w.lenV += (w.targetLen-w.len)*150*dt;
+        w.lenV *= Math.exp(-15*dt);
+        w.len += w.lenV*dt;
+        shape(w, now);
       });
       requestAnimationFrame(tick);
     }
     requestAnimationFrame(tick);
 
-    list.forEach(w=>{
-      const el=w.el;
+    const pt=svg.createSVGPoint();
+    function toLocal(e){
+      pt.x=e.clientX; pt.y=e.clientY;
+      const m=svg.getScreenCTM();
+      return m ? pt.matrixTransform(m.inverse()) : {x:0,y:0};
+    }
+
+    items.forEach(w=>{
       const down=e=>{
         if(e.button!==undefined && e.button!==0) return;
-        const r=w.anchor.getBoundingClientRect();
-        w.rootX=r.left; w.rootY=r.top;
+        const p=toLocal(e);
+        w.grabLen=Math.hypot(p.x-w.x, p.y-w.y);
+        w.grabAng=Math.atan2(p.y-w.y, p.x-w.x);
+        w.startLen=w.len; w.startRot=w.rot;
         w.drag=true;
-        try{ el.setPointerCapture(e.pointerId); }catch(_){}
+        try{ w.hit.setPointerCapture(e.pointerId); }catch(_){}
         e.preventDefault();
       };
       const move=e=>{
         if(!w.drag) return;
-        const a=Math.atan2(e.clientY-w.rootY, e.clientX-w.rootX)*180/Math.PI;
-        let dev = w.side==='left' ? a-180 : a;
-        dev=((dev+540)%360)-180;
-        dev=Math.max(-52,Math.min(52,dev));
-        w.target=dev;
+        const p=toLocal(e);
+        const dist=Math.hypot(p.x-w.x, p.y-w.y);
+        const ang=Math.atan2(p.y-w.y, p.x-w.x);
+        w.targetRot=Math.max(-1.05,Math.min(1.05, w.startRot+norm(ang-w.grabAng)));
+        w.targetLen=Math.max(MINL,Math.min(MAXL, w.startLen+(dist-w.grabLen)));
       };
       const up=()=>{
         if(!w.drag) return;
         w.drag=false;
-        w.target=w.rest;
+        w.targetRot=w.rest;
+        w.targetLen=L0;
       };
-      el.addEventListener('pointerdown',down);
-      el.addEventListener('pointermove',move);
-      el.addEventListener('pointerup',up);
-      el.addEventListener('pointercancel',up);
-      el.addEventListener('lostpointercapture',up);
+      w.hit.addEventListener('pointerdown',down);
+      w.hit.addEventListener('pointermove',move);
+      w.hit.addEventListener('pointerup',up);
+      w.hit.addEventListener('pointercancel',up);
+      w.hit.addEventListener('lostpointercapture',up);
     });
   })();
 
