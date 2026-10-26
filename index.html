@@ -159,7 +159,7 @@
   .wolf-ear{
     --pull:0;
     position:absolute;bottom:calc(100% - 46px);z-index:4;
-    width:clamp(94px,16vw,150px);height:clamp(103px,18vw,162px);
+    width:clamp(92px,15.5vw,146px);height:clamp(94px,16.5vw,148px);
     cursor:grab;touch-action:none;user-select:none;
     transform-origin:50% 100%;will-change:transform;
   }
@@ -186,6 +186,19 @@
     62%{transform:scaleY(1.12) scaleX(.95)}
     100%{transform:scaleY(1) scaleX(1)}
   }
+
+  /* ---------- springy cat whiskers ---------- */
+  .whisker-field{position:absolute;inset:0;z-index:5;pointer-events:none}
+  .whisker-anchor{position:absolute;width:0;height:0}
+  .whisker{
+    position:absolute;top:-7px;height:14px;width:clamp(96px,26vw,150px);
+    pointer-events:auto;cursor:grab;touch-action:none;user-select:none;will-change:transform;
+  }
+  .whisker:active{cursor:grabbing}
+  .whisker.left{right:0;transform-origin:100% 50%}
+  .whisker.right{left:0;transform-origin:0 50%}
+  .whisker svg{width:100%;height:100%;display:block;overflow:visible}
+  .whisker path{fill:none;stroke:rgba(240,234,222,.85);stroke-width:2.2;stroke-linecap:round;filter:drop-shadow(0 1px 2px rgba(0,0,0,.5))}
 
   .scroll-hint{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);color:var(--muted);font-size:12px;letter-spacing:.15em;text-transform:uppercase}
   .scroll-hint .line{width:1px;height:34px;margin:8px auto 0;background:linear-gradient(180deg,var(--gold),transparent);animation:grow 1.8s infinite}
@@ -402,7 +415,7 @@
                     <stop offset="0" stop-color="#9aa1ab"/><stop offset="1" stop-color="#3f434b"/>
                   </linearGradient>
                   <linearGradient id="earInnerL" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0" stop-color="#9aa3ae"/><stop offset="1" stop-color="#555c66"/>
+                    <stop offset="0" stop-color="#a8d4ff"/><stop offset="1" stop-color="#3f7fdd"/>
                   </linearGradient>
                 </defs>
                 <path class="ear-outer" d="M50 4 C57 4 63 34 72 78 C79 112 88 138 82 145 C78 150 64 141 50 141 C36 141 22 150 18 145 C12 138 21 112 28 78 C37 34 43 4 50 4 Z" fill="url(#earOuterL)" stroke="#868c95" stroke-width="1.8" stroke-linejoin="round"/>
@@ -418,7 +431,7 @@
                     <stop offset="0" stop-color="#9aa1ab"/><stop offset="1" stop-color="#3f434b"/>
                   </linearGradient>
                   <linearGradient id="earInnerR" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0" stop-color="#9aa3ae"/><stop offset="1" stop-color="#555c66"/>
+                    <stop offset="0" stop-color="#a8d4ff"/><stop offset="1" stop-color="#3f7fdd"/>
                   </linearGradient>
                 </defs>
                 <path class="ear-outer" d="M50 4 C57 4 63 34 72 78 C79 112 88 138 82 145 C78 150 64 141 50 141 C36 141 22 150 18 145 C12 138 21 112 28 78 C37 34 43 4 50 4 Z" fill="url(#earOuterR)" stroke="#868c95" stroke-width="1.8" stroke-linejoin="round"/>
@@ -426,7 +439,22 @@
               </svg>
             </div></div>
           </div>
-          <div class="canvas-hero art-0 photo-hero"><img src="profil.jpeg" alt="Photo of zWolfurs"></div>
+          <div class="canvas-hero art-0 photo-hero"><img src="profil.jpeg" alt="Photo of zWolfurs">
+            <div class="whisker-field" aria-hidden="true">
+              <div class="whisker-anchor" style="left:31%;top:51%">
+                <div class="whisker left" data-whisker="left" data-rest="11"><svg viewBox="0 0 136 14" preserveAspectRatio="none"><path d="M2 7 C40 3 94 11 134 6"/></svg></div>
+              </div>
+              <div class="whisker-anchor" style="left:31%;top:57%">
+                <div class="whisker left" data-whisker="left" data-rest="-8"><svg viewBox="0 0 136 14" preserveAspectRatio="none"><path d="M2 7 C44 10 92 4 134 8"/></svg></div>
+              </div>
+              <div class="whisker-anchor" style="left:69%;top:51%">
+                <div class="whisker right" data-whisker="right" data-rest="-11"><svg viewBox="0 0 136 14" preserveAspectRatio="none"><path d="M2 7 C40 3 94 11 134 6"/></svg></div>
+              </div>
+              <div class="whisker-anchor" style="left:69%;top:57%">
+                <div class="whisker right" data-whisker="right" data-rest="8"><svg viewBox="0 0 136 14" preserveAspectRatio="none"><path d="M2 7 C44 10 92 4 134 8"/></svg></div>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="frame-note frame-1">Drawing <em>since 2019</em></div>
         <div class="frame-note frame-2">Making fursuit <em>since 2021</em></div>
@@ -847,6 +875,69 @@
     ear.addEventListener('lostpointercapture',up);
   });
 
+  // ---------- springy cat whiskers ----------
+  (function(){
+    const list=[...document.querySelectorAll('[data-whisker]')].map(el=>{
+      const rest=parseFloat(el.dataset.rest)||0;
+      return {
+        el,
+        anchor:el.closest('.whisker-anchor'),
+        side:el.dataset.whisker,
+        rest,
+        angle:rest,
+        vel:0,
+        target:rest,
+        drag:false,
+        rootX:0,
+        rootY:0
+      };
+    });
+    const apply=w=>{ w.el.style.transform=`rotate(${w.angle.toFixed(2)}deg)`; };
+    list.forEach(apply);
+
+    let last=performance.now();
+    function tick(now){
+      const dt=Math.min((now-last)/1000,0.033); last=now;
+      list.forEach(w=>{
+        w.vel += (w.target - w.angle)*120*dt;
+        w.vel *= Math.exp(-13*dt);
+        w.angle += w.vel*dt;
+        apply(w);
+      });
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+
+    list.forEach(w=>{
+      const el=w.el;
+      const down=e=>{
+        if(e.button!==undefined && e.button!==0) return;
+        const r=w.anchor.getBoundingClientRect();
+        w.rootX=r.left; w.rootY=r.top;
+        w.drag=true;
+        try{ el.setPointerCapture(e.pointerId); }catch(_){}
+        e.preventDefault();
+      };
+      const move=e=>{
+        if(!w.drag) return;
+        const a=Math.atan2(e.clientY-w.rootY, e.clientX-w.rootX)*180/Math.PI;
+        let dev = w.side==='left' ? a-180 : a;
+        dev=((dev+540)%360)-180;
+        dev=Math.max(-52,Math.min(52,dev));
+        w.target=dev;
+      };
+      const up=()=>{
+        if(!w.drag) return;
+        w.drag=false;
+        w.target=w.rest;
+      };
+      el.addEventListener('pointerdown',down);
+      el.addEventListener('pointermove',move);
+      el.addEventListener('pointerup',up);
+      el.addEventListener('pointercancel',up);
+      el.addEventListener('lostpointercapture',up);
+    });
+  })();
 
 })();
 </script>
